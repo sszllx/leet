@@ -26,7 +26,7 @@ int isPali(char *s, char *e)
 }
 
 char* longestPalindrome(char* s) {
-    char *head, *tail, *ch, *ct, *p;
+    char *head, *ch, *p;
     int pali_len = 0;
     int check_len = 0;
     char *ret = NULL;
@@ -42,23 +42,21 @@ char* longestPalindrome(char* s) {
     ch = head = s;
     p = ch;
     while (*(ch + 1) != '\0') {
-        char *tmp = p;
-        while (*tmp != '\0') {
-            if (*ch == *tmp) {
-                p = tmp;
-
-                check_len = isPali(ch, p);
+        while (*p != '\0') {
+            if (*ch == *p) {
+                check_len = p - ch + 1;
                 if (pali_len < check_len) {
-                    head = ch;
-                    pali_len = check_len;
+                    check_len = isPali(ch, p);
+                    if (check_len) {
+                        head = ch;
+                        pali_len = check_len;
+                    }
                 }
             }
-            tmp++;
+
+            p++;
         }
 
-
-
-next:
         ch++;
         p = ch;
     }
@@ -75,7 +73,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    char str[] = "abcecbaabba";
+    char str[] = "ccccc";
 
     char *pali = longestPalindrome(str);
     printf("pali str:%s\n", pali);
