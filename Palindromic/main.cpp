@@ -3,7 +3,24 @@
 
 int isPali(char *s, char *e)
 {
+    char *is, *ie;
     int pali_len = 0;
+
+    is = s;
+    ie = e;
+
+    while (is < ie) {
+        if (*is != *ie) {
+            break;
+        }
+
+        is++;
+        ie--;
+    }
+
+    if (is >= ie) {
+        pali_len = e - s + 1;
+    }
 
     return pali_len;
 }
@@ -14,26 +31,41 @@ char* longestPalindrome(char* s) {
     int check_len = 0;
     char *ret = NULL;
 
-    ch = head;
-    p = ch + 1;
+    if (!s) {
+        return ret;
+    }
+
+    if (strlen(s) == 1) {
+        return s;
+    }
+
+    ch = head = s;
+    p = ch;
     while (*(ch + 1) != '\0') {
-        while (*p != '\0' &&
-               *ch != *p) {
-            p++;
+        char *tmp = p;
+        while (*tmp != '\0') {
+            if (*ch == *tmp) {
+                p = tmp;
+
+                check_len = isPali(ch, p);
+                if (pali_len < check_len) {
+                    head = ch;
+                    pali_len = check_len;
+                }
+            }
+            tmp++;
         }
 
-        if (*p == '\0') {
-            return ret;
-        }
 
-        check_len = isPali(ch, p);
-        if (pali_len < check_len) {
-            head = ch;
-            pali_len = check_len;
-        }
 
+next:
         ch++;
-        p = ch + 1;
+        p = ch;
+    }
+
+    if (pali_len > 0) {
+        ret = (char *)calloc(1, pali_len + 1);
+        memcpy(ret, head, pali_len);
     }
 
     return ret;
@@ -43,10 +75,10 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    char str[] = "aba";
+    char str[] = "abcecbaabba";
 
     char *pali = longestPalindrome(str);
-    qDebug() << pali;
+    printf("pali str:%s\n", pali);
 
     return a.exec();
 }
